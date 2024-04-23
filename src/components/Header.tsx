@@ -1,15 +1,4 @@
 import React from "react";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
 
 const Header = () => {
   return (
@@ -77,28 +66,6 @@ const Header = () => {
             </ul>
           </div>
         </div>
-      </div>
-      <div className="h-96">
-        <Slider {...settings}>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">1</h3>
-          </div>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">2</h3>
-          </div>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">3</h3>
-          </div>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">4</h3>
-          </div>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">5</h3>
-          </div>
-          <div>
-            <h3 className="bg-green-700 text-center leading-[670px]">6</h3>
-          </div>
-        </Slider>
       </div>
     </div>
   );
