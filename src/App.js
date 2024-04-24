@@ -8,6 +8,7 @@ function App() {
       <Header />
       <SliderComponent />
       <ContentComponent />
+      <div>hi</div>
     </div>
   );
 }
