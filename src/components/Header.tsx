@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -7,27 +8,27 @@ const Header = () => {
         <div className="after:clear-both after:block max-w-[1240px] mx-auto my-0">
           <div className="float-left">
             <div className="py-9">
-              <a href="#!">
+              <Link to="/">
                 <img
                   className="w-8 h-8"
                   src="image/shiba.png"
                   alt="홈 이미지"
                 />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="float-right">
             <div>
               <ul>
                 <li className="float-left ml-20">
-                  <a className="leading-[50px]" href="#!">
+                  <Link className="leading-[50px]" to="/login">
                     로그인
-                  </a>
+                  </Link>
                 </li>
                 <li className="float-left ml-20">
-                  <a className="leading-[50px]" href="#!">
+                  <Link className="leading-[50px]" to="/join">
                     회원가입
-                  </a>
+                  </Link>
                 </li>
                 <li className="float-left ml-20">
                   <a className="leading-[50px]" href="#!">

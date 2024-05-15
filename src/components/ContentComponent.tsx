@@ -11,8 +11,8 @@ const ContentComponent = () => {
         </div>
         <div className="py-40">
           <ul className="flex flex-wrap">
-            {[1, 2, 3, 4].map((item) => (
-              <li className="basis-1/4">
+            {[1, 2, 3, 4].map((item, idx) => (
+              <li className="basis-1/4" key={idx}>
                 <div className="pb-20 text-left product-box">
                   <div className="pb-20 product-thumbnail">
                     <a href="#!">
