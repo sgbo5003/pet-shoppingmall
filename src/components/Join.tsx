@@ -71,8 +71,6 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-console.log("process.env.API_URL", process.env.REACT_APP_API_URL);
-
 const Join = () => {
   const navigate = useNavigate();
   const formik = useFormik({

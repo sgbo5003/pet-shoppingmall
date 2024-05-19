@@ -1,7 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useUserStore from "../stores/useUserStore.ts";
 
 const Header = () => {
+  const { userInfo, deleteUserInfo } = useUserStore();
+
+  const location = useLocation();
+  const Navigate = useNavigate();
+
+  const logout = () => {
+    deleteUserInfo();
+  };
+  useEffect(() => {
+    if (
+      localStorage.getItem("userStorage") == "" ||
+      localStorage.getItem("userStorage") == null
+    ) {
+      deleteUserInfo();
+      return;
+    }
+    const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
+    if (
+      location.pathname.startsWith("/login") ||
+      location.pathname.startsWith("/join")
+    ) {
+      if (userStorage.state.userInfo.email !== "") {
+        Navigate("/");
+        return;
+      }
+    }
+  }, [location.pathname, userInfo]);
   return (
     <div id="header" className="relative w-full">
       <div className="headerTop border-b border-[#eaeaea]">
@@ -20,16 +48,34 @@ const Header = () => {
           <div className="float-right">
             <div>
               <ul>
-                <li className="float-left ml-20">
-                  <Link className="leading-[50px]" to="/login">
-                    로그인
-                  </Link>
-                </li>
-                <li className="float-left ml-20">
-                  <Link className="leading-[50px]" to="/join">
-                    회원가입
-                  </Link>
-                </li>
+                {userInfo.email !== "" ? (
+                  <>
+                    <li className="float-left ml-20">
+                      <a className="leading-[50px]" onClick={() => logout()}>
+                        로그아웃
+                      </a>
+                    </li>
+                    <li className="float-left ml-20">
+                      <Link className="leading-[50px]" to="/join">
+                        회원정보수정
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="float-left ml-20">
+                      <Link className="leading-[50px]" to="/login">
+                        로그인
+                      </Link>
+                    </li>
+                    <li className="float-left ml-20">
+                      <Link className="leading-[50px]" to="/join">
+                        회원가입
+                      </Link>
+                    </li>
+                  </>
+                )}
+
                 <li className="float-left ml-20">
                   <a className="leading-[50px]" href="#!">
                     마이페이지

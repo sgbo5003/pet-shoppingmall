@@ -4,3 +4,11 @@ export interface SignUpRequest {
   name: string;
   phoneNumber: string;
 }
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+export interface LoginResponse {
+  email: string;
+  name: string;
+}

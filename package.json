@@ -20,7 +20,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
