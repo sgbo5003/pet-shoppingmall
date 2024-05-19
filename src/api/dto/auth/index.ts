@@ -11,4 +11,5 @@ export interface LoginRequest {
 export interface LoginResponse {
   email: string;
   name: string;
+  adminYn: string;
 }

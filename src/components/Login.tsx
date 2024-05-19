@@ -19,6 +19,7 @@ import { ErrorDto } from "../api/dto";
 import { api } from "../api/index.ts";
 import { LoginRequest, LoginResponse } from "../api/dto/auth";
 import useUserStore from "../stores/useUserStore.ts";
+import SubTitleComponent, { defaultTheme } from "./subtitle/index.tsx";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -36,8 +37,6 @@ const initialValues = {
   email: "", // test5@test.com
   password: "", // 1111
 };
-
-const defaultTheme = createTheme();
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: theme.palette.getContrastText(grey[900]),
@@ -64,13 +63,14 @@ const Login = () => {
           password: values.password,
         };
         const response = await api.post<LoginResponse>("/auth/login", obj);
-        // console.log("response", response);
+        console.log("response", response);
         await setUserInfo(response.data);
         await navigate("/");
       } catch (e) {
         const error = e as AxiosError<ErrorDto>;
         setStatus(error.response?.data.errorMessage);
         setSubmitting(false);
+        alert(error.response?.data);
       }
     },
   });
@@ -78,9 +78,10 @@ const Login = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
+        <SubTitleComponent title="LOGIN" />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 6,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

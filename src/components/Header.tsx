@@ -60,6 +60,21 @@ const Header = () => {
                         회원정보수정
                       </Link>
                     </li>
+                    <li className="float-left ml-20">
+                      <a className="leading-[50px]" href="#!">
+                        마이페이지
+                      </a>
+                    </li>
+                    <li className="float-left ml-20">
+                      <a className="leading-[50px]" href="#!">
+                        장바구니
+                      </a>
+                    </li>
+                    <li className="float-left ml-20">
+                      <Link className="leading-[50px]" to="/admin">
+                        Admin
+                      </Link>
+                    </li>
                   </>
                 ) : (
                   <>
@@ -75,17 +90,6 @@ const Header = () => {
                     </li>
                   </>
                 )}
-
-                <li className="float-left ml-20">
-                  <a className="leading-[50px]" href="#!">
-                    마이페이지
-                  </a>
-                </li>
-                <li className="float-left ml-20">
-                  <a className="leading-[50px]" href="#!">
-                    장바구니
-                  </a>
-                </li>
               </ul>
             </div>
           </div>
@@ -102,14 +106,14 @@ const Header = () => {
                 <a href="#!">강아지 상품</a>
               </li>
               <li>
-                <a href="#!">게시판</a>
+                <a href="#!">커뮤니티</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#!">리뷰</a>
               </li>
               <li>
                 <a href="#!">방문 신청</a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
