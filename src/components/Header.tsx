@@ -13,8 +13,8 @@ const Header = () => {
   };
   useEffect(() => {
     if (
-      localStorage.getItem("userStorage") == "" ||
-      localStorage.getItem("userStorage") == null
+      localStorage.getItem("userStorage") === "" ||
+      localStorage.getItem("userStorage") === null
     ) {
       deleteUserInfo();
       return;
@@ -25,6 +25,17 @@ const Header = () => {
       location.pathname.startsWith("/join")
     ) {
       if (userStorage.state.userInfo.email !== "") {
+        Navigate("/");
+        return;
+      }
+    }
+    if (
+      !(
+        location.pathname.startsWith("/login") ||
+        location.pathname.startsWith("/join")
+      )
+    ) {
+      if (userStorage.state.userInfo.email === "") {
         Navigate("/");
         return;
       }
@@ -51,7 +62,11 @@ const Header = () => {
                 {userInfo.email !== "" ? (
                   <>
                     <li className="float-left ml-20">
-                      <a className="leading-[50px]" onClick={() => logout()}>
+                      <a
+                        className="leading-[50px]"
+                        onClick={() => logout()}
+                        href="{()=>false}"
+                      >
                         로그아웃
                       </a>
                     </li>
