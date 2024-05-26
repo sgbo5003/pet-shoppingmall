@@ -11,7 +11,7 @@ module.exports = {
       padding: px0_200,
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
   // corePlugins: {
   //   preflight: false,
   // },
