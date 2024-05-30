@@ -11,7 +11,10 @@ module.exports = {
       padding: px0_200,
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
   // corePlugins: {
   //   preflight: false,
   // },
