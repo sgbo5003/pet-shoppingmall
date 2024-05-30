@@ -195,7 +195,7 @@ const ProductImageModal = (props: {
     <>
       <div className="layer_body">
         <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-          <TabList className="styles.tab_g8">
+          <TabList className="tab_g8">
             <Tab
               className={tabIndex == 0 ? "on" : ""}
               style={{ display: "none" }}
@@ -209,21 +209,9 @@ const ProductImageModal = (props: {
           <TabPanel></TabPanel>
           <TabPanel>
             <div className="group_info">
-              <div className="guide_section">
-                <div className="guide_item">
-                  <span id="creatveGuide">
-                    <a className="link_guide">소재 등록 가이드</a>
-                  </span>
-                </div>
-                {/* <div className={styles.guide_item}>
-                  <span>
-                    <a className={styles.link_guide}>심사 가이드</a>
-                  </span>
-                </div> */}
-              </div>
-              <span className="box_inpfile">
+              <span className="inline-block box_inpfile">
                 <label htmlFor="file" className={"btn_gs" + " " + "inner_g"}>
-                  <span className="inner_g">
+                  <span className="inner_g" style={{ display: "flex" }}>
                     <BsPlus size={20} />
                     파일 업로드
                   </span>

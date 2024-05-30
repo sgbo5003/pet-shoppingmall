@@ -162,13 +162,51 @@ const Admin = () => {
                     >
                       상품 이미지
                     </label>
-                    <button
+                    {/* <button
                       type="button"
                       className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                       onClick={() => setAddImgModalOn(true)}
                     >
                       이미지 등록
-                    </button>
+                    </button> */}
+                    <div className="grid grid-cols-1 mt-6 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                      {[1, 2, 3, 4].map((item, idx) => {
+                        return (
+                          <div className="relative group" key={idx}>
+                            <input
+                              type="file"
+                              name={`file${item}`}
+                              id={`file${item}`}
+                              className="hidden"
+                            />
+                            <div className="w-full overflow-hidden bg-gray-200 rounded-md aspect-h-1 aspect-w-1 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                              <img className="object-cover object-center w-full h-full lg:h-full lg:w-full" />
+                            </div>
+                            <div className="flex justify-between mt-4">
+                              <div>
+                                {/* <h3 className="text-sm text-gray-700">
+                                  <a>
+                                    <span
+                                      aria-hidden="true"
+                                      className="absolute inset-0"
+                                    />
+                                  </a>
+                                </h3> */}
+                                <p className="mt-1 text-sm text-gray-500">
+                                  대표 이미지{item}
+                                </p>
+                              </div>
+                              <label
+                                className="text-sm font-medium text-gray-900 hover:cursor-pointer"
+                                htmlFor={`file${item}`}
+                              >
+                                등록
+                              </label>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div className="sm:col-span-3">
                     <label
@@ -283,7 +321,7 @@ const Admin = () => {
           </form>
         </Box>
       </Container>
-      <Modal
+      {/* <Modal
         isOpen={addImgModalOn}
         setIsOpen={setAddImgModalOn}
         headerTitle={"이미지 등록"}
@@ -298,7 +336,7 @@ const Admin = () => {
           setValues={formik.setValues}
           setAddImgModalOn={setAddImgModalOn}
         />
-      </Modal>
+      </Modal> */}
     </ThemeProvider>
   );
 };
