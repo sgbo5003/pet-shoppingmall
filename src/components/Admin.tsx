@@ -1,18 +1,18 @@
 import { Box, Container, ThemeProvider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SubTitleComponent, { defaultTheme } from "./subtitle/index.tsx";
-import { PhotoIcon } from "@heroicons/react/24/solid";
+// import { PhotoIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import { CategoryAllResponse, ErrorDto } from "../api/dto/index.ts";
 import { api } from "../api/index.ts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Modal from "../components/modal/index.tsx";
-import ProductImageModal from "./modal/productAddImage/index.tsx";
+import Swal from "sweetalert2";
+
 export interface FileProps {
   file: any; // type : FileProps | CreativeFiles
-  imageSize: { width: number; height: number };
-  imageSrc: string;
+  // imageSize: { width: number; height: number };
+  previewImageSrc: string;
 }
 export interface productFormValues {
   name: string;
@@ -31,7 +31,7 @@ const Admin = () => {
   const [category2List, setCategory2List] = useState<
     Array<CategoryAllResponse>
   >([]);
-  const [addImgModalOn, setAddImgModalOn] = useState<boolean>(false);
+  // const [addImgModalOn, setAddImgModalOn] = useState<boolean>(false);
 
   const initialValues: productFormValues = {
     name: "",
@@ -81,6 +81,53 @@ const Admin = () => {
     },
   });
 
+  const fileInputHandleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) => {
+    const input = e.target;
+    const files = input.files;
+    // console.log('files', files);
+    if (files?.length != 0) {
+      if (files !== null) {
+        if (
+          !(
+            files[0].type === "image/jpg" ||
+            files[0].type === "image/jpeg" ||
+            files[0].type === "image/png"
+          )
+        ) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "bottom-right",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+          Toast.fire({
+            icon: "error",
+            title: `올바른 파일형식이 아닙니다.`,
+          });
+          return;
+        }
+        let pushData = [...formik.values.imgFiles];
+        const reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        return new Promise<void>((resolve) => {
+          reader.onload = () => {
+            pushData[idx] = {
+              file: files,
+              previewImageSrc: String(reader.result),
+            };
+            formik.setValues({ ...formik.values, imgFiles: pushData });
+            resolve();
+          };
+        });
+        // encodeFileToBase64(e, files, idx);
+      }
+    }
+  };
+
   const getCategory1 = async () => {
     try {
       const response = await api.get<CategoryAllResponse[]>("/category1");
@@ -115,7 +162,7 @@ const Admin = () => {
     getCategory2(initialValues.category1, true);
   }, []);
 
-  console.log("formikValues", formik.values);
+  // console.log("formikValues", formik.values);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -178,9 +225,22 @@ const Admin = () => {
                               name={`file${item}`}
                               id={`file${item}`}
                               className="hidden"
+                              accept="image/*"
+                              onChange={(e) => {
+                                fileInputHandleChange(e, idx);
+                              }}
                             />
                             <div className="w-full overflow-hidden bg-gray-200 rounded-md aspect-h-1 aspect-w-1 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                              <img className="object-cover object-center w-full h-full lg:h-full lg:w-full" />
+                              {formik.values.imgFiles[idx] === undefined ? (
+                                <img className="object-cover object-center w-full h-full lg:h-full lg:w-full" />
+                              ) : (
+                                <img
+                                  className="object-cover object-center w-full h-full lg:h-full lg:w-full"
+                                  src={
+                                    formik.values.imgFiles[idx].previewImageSrc
+                                  }
+                                />
+                              )}
                             </div>
                             <div className="flex justify-between mt-4">
                               <div>
