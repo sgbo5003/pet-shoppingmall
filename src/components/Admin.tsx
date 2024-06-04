@@ -193,9 +193,26 @@ const Admin = () => {
                       <input
                         type="text"
                         {...formik.getFieldProps("name")}
-                        className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.name && formik.errors.name
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.name && formik.errors.name
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.name && formik.errors.name
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
                       />
                     </div>
+                    {formik.touched.name && formik.errors.name ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.name}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="col-span-full">
                     <label
@@ -274,9 +291,26 @@ const Admin = () => {
                       <input
                         type="text"
                         {...formik.getFieldProps("company")}
-                        className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.company && formik.errors.company
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.company && formik.errors.company
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.company && formik.errors.company
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
                       />
                     </div>
+                    {formik.touched.company && formik.errors.company ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.company}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="sm:col-span-3">
                     <label
@@ -289,9 +323,26 @@ const Admin = () => {
                       <input
                         type="text"
                         {...formik.getFieldProps("origin")}
-                        className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.origin && formik.errors.origin
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.origin && formik.errors.origin
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.origin && formik.errors.origin
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
                       />
                     </div>
+                    {formik.touched.origin && formik.errors.origin ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.origin}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="sm:col-span-2">
                     <label
@@ -357,9 +408,26 @@ const Admin = () => {
                       <input
                         type="text"
                         {...formik.getFieldProps("price")}
-                        className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.price && formik.errors.price
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.price && formik.errors.price
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.price && formik.errors.price
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
                       />
                     </div>
+                    {formik.touched.price && formik.errors.price ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.price}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </div>
