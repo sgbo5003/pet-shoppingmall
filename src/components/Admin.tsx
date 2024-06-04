@@ -44,15 +44,10 @@ const Admin = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("올바른 이메일 형식이 아닙니다")
-      .min(3, "최소 3글자 이상이여야 합니다.")
-      .max(50, "최대 50글자 이하이여야 합니다.")
-      .required("이메일은 필수 입력 항목입니다."),
-    password: Yup.string()
-      .min(8, "최소 8글자 이상이여야 합니다.")
-      .max(20, "최대 20글자 이하이여야 합니다.")
-      .required("비밀번호는 필수 입력 항목입니다."),
+    name: Yup.string().required("필수 입력 항목입니다."),
+    company: Yup.string().required("필수 입력 항목입니다."),
+    origin: Yup.string().required("필수 입력 항목입니다."),
+    price: Yup.string().required("필수 입력 항목입니다."),
   });
 
   const formik = useFormik({
@@ -176,7 +171,7 @@ const Admin = () => {
             alignItems: "left",
           }}
         >
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <div className="space-y-12">
               <div className="pb-12 border-b border-gray-900/10">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -217,7 +212,7 @@ const Admin = () => {
                       이미지 등록
                     </button> */}
                     <div className="grid grid-cols-1 mt-6 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                      {[1, 2, 3, 4].map((item, idx) => {
+                      {[1, 2, 3].map((item, idx) => {
                         return (
                           <div className="relative group" key={idx}>
                             <input
@@ -381,22 +376,6 @@ const Admin = () => {
           </form>
         </Box>
       </Container>
-      {/* <Modal
-        isOpen={addImgModalOn}
-        setIsOpen={setAddImgModalOn}
-        headerTitle={"이미지 등록"}
-        headerBorderBottom={true}
-        height={"700"}
-        width={"950"}
-        bodyTextAlign={"start"}
-        bodyPaddingCustom={true}
-      >
-        <ProductImageModal
-          form={formik.values}
-          setValues={formik.setValues}
-          setAddImgModalOn={setAddImgModalOn}
-        />
-      </Modal> */}
     </ThemeProvider>
   );
 };
