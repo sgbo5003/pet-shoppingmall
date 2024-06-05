@@ -8,6 +8,7 @@ import { api } from "../api/index.ts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
+import { ProductRequest } from "../api/dto/product/index.ts";
 
 export interface FileProps {
   file: any; // type : FileProps | CreativeFiles
@@ -24,6 +25,17 @@ export interface productFormValues {
   price: string;
 }
 
+interface ProductImgProps {
+  name: string;
+  title: string;
+}
+
+const productImgArr: ProductImgProps[] = [
+  { name: "mainImg", title: "대표 이미지" },
+  { name: "subImg1", title: "상세 이미지1" },
+  { name: "subImg2", title: "상세 이미지2" },
+];
+
 const Admin = () => {
   const [category1List, setCategory1List] = useState<
     Array<CategoryAllResponse>
@@ -31,6 +43,7 @@ const Admin = () => {
   const [category2List, setCategory2List] = useState<
     Array<CategoryAllResponse>
   >([]);
+  const [mainImgCheckFlag, setMainImgCheckFlag] = useState<boolean>(false);
   // const [addImgModalOn, setAddImgModalOn] = useState<boolean>(false);
 
   const initialValues: productFormValues = {
@@ -57,13 +70,28 @@ const Admin = () => {
     validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       console.log("values123", values);
+      // console.log("file", values.imgFiles[0].file[0]);
+      if (values.imgFiles[0] === undefined) {
+        await setMainImgCheckFlag(true);
+        return;
+      } else {
+        setMainImgCheckFlag(false);
+      }
       try {
         setSubmitting(true);
-        // const obj: LoginRequest = {
-        //   email: values.email,
-        //   password: values.password,
-        // };
-        // const response = await api.post<LoginResponse>("/auth/login", obj);
+        let fileArr: File[] = [];
+        for (let i = 0; i < values.imgFiles.length; i++) {
+          fileArr = fileArr.concat(values.imgFiles[i].file[0]);
+        }
+        console.log("filieArr", fileArr);
+        const obj: ProductRequest = {
+          name: values.name,
+          img: fileArr,
+          company: values.company,
+          origin: values.origin,
+          price: Number(values.price),
+        };
+        await api.post<ProductRequest>("/product/admin", obj);
         // console.log("response", response);
         // await setUserInfo(response.data);
         // await navigate("/");
@@ -158,6 +186,7 @@ const Admin = () => {
   }, []);
 
   // console.log("formikValues", formik.values);
+  console.log("formikImg1", formik.values.imgFiles[0]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -221,21 +250,14 @@ const Admin = () => {
                     >
                       상품 이미지
                     </label>
-                    {/* <button
-                      type="button"
-                      className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                      onClick={() => setAddImgModalOn(true)}
-                    >
-                      이미지 등록
-                    </button> */}
                     <div className="grid grid-cols-1 mt-6 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                      {[1, 2, 3].map((item, idx) => {
+                      {productImgArr.map((item, idx) => {
                         return (
                           <div className="relative group" key={idx}>
                             <input
                               type="file"
-                              name={`file${item}`}
-                              id={`file${item}`}
+                              name={`file${item.name}`}
+                              id={`file${item.name}`}
                               className="hidden"
                               accept="image/*"
                               onChange={(e) => {
@@ -265,12 +287,12 @@ const Admin = () => {
                                   </a>
                                 </h3> */}
                                 <p className="mt-1 text-sm text-gray-500">
-                                  대표 이미지{item}
+                                  {item.title}
                                 </p>
                               </div>
                               <label
                                 className="text-sm font-medium text-gray-900 hover:cursor-pointer"
-                                htmlFor={`file${item}`}
+                                htmlFor={`file${item.name}`}
                               >
                                 등록
                               </label>
@@ -279,6 +301,11 @@ const Admin = () => {
                         );
                       })}
                     </div>
+                    {mainImgCheckFlag && (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        대표 이미지는 필수 항목입니다.
+                      </p>
+                    )}
                   </div>
                   <div className="sm:col-span-3">
                     <label
