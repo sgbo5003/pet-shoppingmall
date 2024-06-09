@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { ProductRequest } from "../api/dto/product/index.ts";
+import { useNavigate } from "react-router-dom";
 
 export interface FileProps {
   file: any; // type : FileProps | CreativeFiles
@@ -31,9 +32,9 @@ interface ProductImgProps {
 }
 
 const productImgArr: ProductImgProps[] = [
-  { name: "mainImg", title: "대표 이미지" },
-  { name: "subImg1", title: "상세 이미지1" },
-  { name: "subImg2", title: "상세 이미지2" },
+  { name: "mainImg1", title: "대표 이미지1" },
+  { name: "mainImg2", title: "대표 이미지2" },
+  { name: "mainImg3", title: "대표 이미지3" },
 ];
 
 const Admin = () => {
@@ -45,7 +46,7 @@ const Admin = () => {
   >([]);
   const [mainImgCheckFlag, setMainImgCheckFlag] = useState<boolean>(false);
   // const [addImgModalOn, setAddImgModalOn] = useState<boolean>(false);
-
+  const Navigate = useNavigate();
   const initialValues: productFormValues = {
     name: "",
     imgFiles: [],
@@ -70,7 +71,6 @@ const Admin = () => {
     validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       console.log("values123", values);
-      // console.log("file", values.imgFiles[0].file[0]);
       if (values.imgFiles[0] === undefined) {
         await setMainImgCheckFlag(true);
         return;
@@ -79,22 +79,46 @@ const Admin = () => {
       }
       try {
         setSubmitting(true);
+        let imgFilesArr: FileProps[] = [];
         let fileArr: File[] = [];
-        for (let i = 0; i < values.imgFiles.length; i++) {
-          fileArr = fileArr.concat(values.imgFiles[i].file[0]);
+        imgFilesArr = values.imgFiles.filter((el) => true);
+        for (let i = 0; i < imgFilesArr.length; i++) {
+          fileArr = fileArr.concat(imgFilesArr[i].file[0]);
         }
-        console.log("filieArr", fileArr);
+        // console.log("fileArr", fileArr);
+        const bodyFormData = new FormData();
         const obj: ProductRequest = {
           name: values.name,
           img: fileArr,
           company: values.company,
           origin: values.origin,
+          category1Id: values.category1,
+          category2Id: values.category2,
           price: Number(values.price),
         };
-        await api.post<ProductRequest>("/product/admin", obj);
-        // console.log("response", response);
-        // await setUserInfo(response.data);
-        // await navigate("/");
+        // console.log("obj", obj);
+        Object.keys(obj).map((key) => {
+          if (key == "img") {
+            for (let i = 0; i < fileArr.length; i++) {
+              bodyFormData.append(key, fileArr[i]);
+            }
+          } else {
+            bodyFormData.append(key, obj[key]);
+          }
+        });
+
+        // FormData의 값 확인
+        for (const pair of bodyFormData.entries()) {
+          // pair[0] : key, pair[1] : value
+          // console.log(pair[0] + ", " + pair[1]);
+          if (pair[1] == "null") {
+            bodyFormData.delete(pair[0]);
+          }
+        }
+        // console.log("bodyFormData", bodyFormData);
+        await api.post<ProductRequest>("/product/admin", bodyFormData);
+        await alert("상품 등록 성공");
+        await Navigate("/");
       } catch (e) {
         const error = e as AxiosError<ErrorDto>;
         setStatus(error.response?.data.errorMessage);
@@ -186,7 +210,6 @@ const Admin = () => {
   }, []);
 
   // console.log("formikValues", formik.values);
-  console.log("formikImg1", formik.values.imgFiles[0]);
 
   return (
     <ThemeProvider theme={defaultTheme}>

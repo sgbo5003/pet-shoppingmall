@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserStore from "../stores/useUserStore.ts";
+import { api } from "../api/index.ts";
 
 const Header = () => {
   const { userInfo, deleteUserInfo } = useUserStore();
@@ -8,8 +9,9 @@ const Header = () => {
   const location = useLocation();
   const Navigate = useNavigate();
 
-  const logout = () => {
-    deleteUserInfo();
+  const logout = async () => {
+    await api.get("/auth/logout");
+    await deleteUserInfo();
   };
   useEffect(() => {
     if (
@@ -22,7 +24,8 @@ const Header = () => {
     const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
     if (
       location.pathname.startsWith("/login") ||
-      location.pathname.startsWith("/join")
+      location.pathname.startsWith("/join") ||
+      location.pathname.startsWith("/product")
     ) {
       if (userStorage.state.userInfo.email !== "") {
         Navigate("/");
@@ -32,7 +35,8 @@ const Header = () => {
     if (
       !(
         location.pathname.startsWith("/login") ||
-        location.pathname.startsWith("/join")
+        location.pathname.startsWith("/join") ||
+        location.pathname.startsWith("/product")
       )
     ) {
       if (userStorage.state.userInfo.email === "") {
@@ -50,7 +54,7 @@ const Header = () => {
               <Link to="/">
                 <img
                   className="w-8 h-8"
-                  src="image/shiba.png"
+                  src="/image/shiba.png"
                   alt="홈 이미지"
                 />
               </Link>
@@ -62,11 +66,7 @@ const Header = () => {
                 {userInfo.email !== "" ? (
                   <>
                     <li className="float-left ml-20">
-                      <a
-                        className="leading-[50px]"
-                        onClick={() => logout()}
-                        href="{()=>false}"
-                      >
+                      <a className="leading-[50px]" onClick={() => logout()}>
                         로그아웃
                       </a>
                     </li>
