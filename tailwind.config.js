@@ -9,6 +9,10 @@ module.exports = {
     extend: {
       margin: px0_200,
       padding: px0_200,
+      backgroundImage: {
+        countUp: "url('./assets/images/btn_count_up.png')",
+        countDown: "url('./assets/images/btn_count_down.png')",
+      },
     },
   },
   plugins: [
