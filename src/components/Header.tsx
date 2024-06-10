@@ -12,38 +12,37 @@ const Header = () => {
   const logout = async () => {
     await api.get("/auth/logout");
     await deleteUserInfo();
+    await Navigate("/");
   };
   useEffect(() => {
-    if (
-      localStorage.getItem("userStorage") === "" ||
-      localStorage.getItem("userStorage") === null
-    ) {
-      deleteUserInfo();
-      return;
-    }
+    // if (
+    //   localStorage.getItem("userStorage") === "" ||
+    //   localStorage.getItem("userStorage") === null
+    // ) {
+    //   deleteUserInfo();
+    //   return;
+    // }
     const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
     if (
       location.pathname.startsWith("/login") ||
-      location.pathname.startsWith("/join") ||
-      location.pathname.startsWith("/product")
+      location.pathname.startsWith("/join")
     ) {
       if (userStorage.state.userInfo.email !== "") {
         Navigate("/");
         return;
       }
     }
-    if (
-      !(
-        location.pathname.startsWith("/login") ||
-        location.pathname.startsWith("/join") ||
-        location.pathname.startsWith("/product")
-      )
-    ) {
-      if (userStorage.state.userInfo.email === "") {
-        Navigate("/");
-        return;
-      }
-    }
+    // if (
+    //   !(
+    //     location.pathname.startsWith("/login") ||
+    //     location.pathname.startsWith("/join")
+    //   )
+    // ) {
+    //   if (userStorage.state.userInfo.email === "") {
+    //     Navigate("/");
+    //     return;
+    //   }
+    // }
   }, [location.pathname, userInfo]);
   return (
     <div id="header" className="relative w-full">
