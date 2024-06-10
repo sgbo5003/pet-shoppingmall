@@ -128,7 +128,7 @@ const ProductDetail = () => {
                   <dd className="float-left w-auto text-sm">한국</dd>
                 </dl>
                 <div className="flex items-center float-left w-full py-6 min-h-6">
-                  <div className="float-left w-[100px] text-sm text-[#999] mr-10">
+                  <div className="float-left text-sm text-[#999] mr-10">
                     <span className="min-w-16">
                       <input
                         type="text"
@@ -151,18 +151,18 @@ const ProductDetail = () => {
                       </span>
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex grow-[2]">
                     <button
-                      type="submit"
+                      type="button"
+                      className="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-indigo-700 border border-transparent rounded-md bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-7"
+                    >
+                      장바구니
+                    </button>
+                    <button
+                      type="button"
                       className="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       바로 구매
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      장바구니
                     </button>
                   </div>
                 </div>
