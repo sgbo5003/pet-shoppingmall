@@ -6,10 +6,12 @@ import Login from "./components/Login.tsx";
 import Join from "./components/Join.tsx";
 import Admin from "./components/Admin.tsx";
 import ProductDetail from "./components/ProductDetail.tsx";
+import ScrollToTop from "./components/scrollToTop/index.ts";
 
 const Router = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
