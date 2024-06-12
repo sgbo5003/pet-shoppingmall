@@ -5,13 +5,17 @@ export interface ProductRequest {
   origin: string;
   category1Id: number;
   category2Id: number;
+  regular_price: number;
   price: number;
+  delivery_fee: number;
 }
 export interface newProductListResponse {
   id: string;
   name: string;
   img1: string;
+  regular_price: number;
   price: number;
+  delivery_fee: number;
 }
 
 export interface ProductDetailResponse {
@@ -25,7 +29,9 @@ export interface ProductDetailResponse {
   origin: string;
   Category1Id: number;
   Category2Id: number;
+  regular_price: number;
   price: number;
+  delivery_fee: number;
   createdAt: string;
   deletedAt: string | null;
   updatedAt: string | null;
@@ -43,7 +49,9 @@ export const initProductDetailResponse = {
   origin: "",
   Category1Id: 0,
   Category2Id: 0,
+  regular_price: 0,
   price: 0,
+  delivery_fee: 0,
   createdAt: "",
   deletedAt: null,
   updatedAt: null,

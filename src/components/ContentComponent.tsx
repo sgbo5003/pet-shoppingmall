@@ -117,7 +117,7 @@ const ContentComponent = () => {
                     </h3>
                   </Link>
                   <p className="mt-[0.25rem] text-lg font-medium text-gray-900">
-                    {item.price}원
+                    {item.price}원 <del>{item.regular_price}원</del>
                   </p>
                 </li>
               ))}

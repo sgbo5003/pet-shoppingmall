@@ -19,11 +19,14 @@ export interface FileProps {
 export interface productFormValues {
   name: string;
   imgFiles: FileProps[];
+  // 상세페이지 이미지 추가 예정
   company: string;
   origin: string;
   category1: number;
   category2: number;
+  regularPrice: string;
   price: string;
+  deliveryFee: string;
 }
 
 interface ProductImgProps {
@@ -54,14 +57,18 @@ const Admin = () => {
     origin: "",
     category1: 1,
     category2: 1,
+    regularPrice: "",
     price: "",
+    deliveryFee: "",
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("필수 입력 항목입니다."),
     company: Yup.string().required("필수 입력 항목입니다."),
     origin: Yup.string().required("필수 입력 항목입니다."),
+    regularPrice: Yup.string().required("필수 입력 항목입니다."),
     price: Yup.string().required("필수 입력 항목입니다."),
+    deliveryFee: Yup.string().required("필수 입력 항목입니다."),
   });
 
   const formik = useFormik({
@@ -94,7 +101,9 @@ const Admin = () => {
           origin: values.origin,
           category1Id: values.category1,
           category2Id: values.category2,
+          regular_price: Number(values.regularPrice),
           price: Number(values.price),
+          delivery_fee: Number(values.deliveryFee),
         };
         // console.log("obj", obj);
         Object.keys(obj).map((key) => {
@@ -394,7 +403,7 @@ const Admin = () => {
                       </p>
                     ) : null}
                   </div>
-                  <div className="sm:col-span-2">
+                  <div className="sm:col-span-1">
                     <label
                       htmlFor="category1"
                       className="block text-sm font-medium leading-6 text-gray-900"
@@ -419,7 +428,7 @@ const Admin = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="sm:col-span-2">
+                  <div className="sm:col-span-1">
                     <label
                       htmlFor="category2"
                       className="block text-sm font-medium leading-6 text-gray-900"
@@ -452,7 +461,43 @@ const Admin = () => {
                       htmlFor="price"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      가격
+                      정상가
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        {...formik.getFieldProps("regularPrice")}
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.regularPrice &&
+                          formik.errors.regularPrice
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.regularPrice &&
+                          formik.errors.regularPrice
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.regularPrice &&
+                          formik.errors.regularPrice
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
+                      />
+                    </div>
+                    {formik.touched.regularPrice &&
+                    formik.errors.regularPrice ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.regularPrice}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="sm:col-span-1">
+                    <label
+                      htmlFor="price"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      판매가
                     </label>
                     <div className="mt-2">
                       <input
@@ -479,10 +524,44 @@ const Admin = () => {
                       </p>
                     ) : null}
                   </div>
+                  <div className="sm:col-span-1">
+                    <label
+                      htmlFor="deliveryFee"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      배송비
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        {...formik.getFieldProps("deliveryFee")}
+                        className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                          formik.touched.deliveryFee &&
+                          formik.errors.deliveryFee
+                            ? "text-red-900"
+                            : "text-gray-900"
+                        } shadow-sm ring-1 ring-inset ${
+                          formik.touched.deliveryFee &&
+                          formik.errors.deliveryFee
+                            ? "ring-red-300"
+                            : "ring-gray-300"
+                        } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                          formik.touched.deliveryFee &&
+                          formik.errors.deliveryFee
+                            ? "focus:ring-red-500"
+                            : "focus:ring-indigo-600"
+                        } sm:text-sm sm:leading-6`}
+                      />
+                    </div>
+                    {formik.touched.deliveryFee && formik.errors.deliveryFee ? (
+                      <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                        {formik.errors.deliveryFee}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-end mt-20 gap-x-6">
               <button
                 type="submit"
