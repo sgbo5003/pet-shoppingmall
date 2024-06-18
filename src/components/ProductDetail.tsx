@@ -8,12 +8,24 @@ import {
 import { AxiosError } from "axios";
 import { ErrorDto } from "../api/dto";
 import { useParams } from "react-router-dom";
+import DetailInfo from "./productDetail/DetailInfo.tsx";
+import ExchangeAndRefund from "./productDetail/ExchangeAndRefund.tsx";
+import Review from "./productDetail/Review.tsx";
+import Qna from "./productDetail/Qna.tsx";
+
+const tabItems = [
+  { id: 1, title: "상세정보" },
+  { id: 2, title: "교환및반품" },
+  { id: 3, title: "상품후기" },
+  { id: 4, title: "상품문의" },
+];
 
 const ProductDetail = () => {
   const params = useParams();
   const [productDetailInfo, setProductDetailInfo] =
     useState<ProductDetailResponse>(initProductDetailResponse);
-
+  const [itemCount, setItemCount] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<number>(1);
   const getProductDetail = async () => {
     try {
       const response = await api.get<ProductDetailResponse>(
@@ -95,7 +107,12 @@ const ProductDetail = () => {
                     정가
                   </dt>
                   <dd className="float-left w-auto text-sm">
-                    <del className="text-[#333333]">10,000원</del>
+                    <del className="text-[#333333]">
+                      {(
+                        Number(productDetailInfo.regular_price) * itemCount
+                      ).toLocaleString()}
+                      원
+                    </del>
                   </dd>
                 </dl>
                 <dl className="float-left w-full py-6 min-h-6">
@@ -104,7 +121,11 @@ const ProductDetail = () => {
                   </dt>
                   <dd className="float-left w-auto text-sm">
                     <strong className="text-xl text-[#000]">
-                      <b>8,000</b>
+                      <b>
+                        {(
+                          Number(productDetailInfo.price) * itemCount
+                        ).toLocaleString()}
+                      </b>
                     </strong>
                     원
                   </dd>
@@ -113,19 +134,25 @@ const ProductDetail = () => {
                   <dt className="float-left w-[100px] text-sm text-[#999] mr-10">
                     배송비
                   </dt>
-                  <dd className="float-left w-auto text-sm">0원</dd>
+                  <dd className="float-left w-auto text-sm">
+                    {productDetailInfo.delivery_fee.toLocaleString()}원
+                  </dd>
                 </dl>
                 <dl className="float-left w-full py-6 min-h-6">
                   <dt className="float-left w-[100px] text-sm text-[#999] mr-10">
                     제조사
                   </dt>
-                  <dd className="float-left w-auto text-sm">어니스트키친</dd>
+                  <dd className="float-left w-auto text-sm">
+                    {productDetailInfo.company}
+                  </dd>
                 </dl>
                 <dl className="float-left w-full py-6 min-h-6">
                   <dt className="float-left w-[100px] text-sm text-[#999] mr-10">
                     원산지
                   </dt>
-                  <dd className="float-left w-auto text-sm">한국</dd>
+                  <dd className="float-left w-auto text-sm">
+                    {productDetailInfo.origin}
+                  </dd>
                 </dl>
                 <div className="flex items-center float-left w-full py-6 min-h-6">
                   <div className="float-left text-sm text-[#999] mr-10">
@@ -133,18 +160,26 @@ const ProductDetail = () => {
                       <input
                         type="text"
                         className="float-left px-5 w-11 outline-none h-8 border border-[#ccc] text-[#3f3f3f] text-[12px] leading-8 text-center focus:border-none focus:ring-inset focus:ring-[#ccc]"
-                        value={1}
+                        value={itemCount}
+                        onChange={() => false}
                       />
                       <span className="float-left ml-[-1px]">
                         <button
                           type="button"
                           className="block w-[23px] h-[17px] indent-[-9999px] bg-countUp bg-no-repeat bg-left-top"
+                          onClick={() =>
+                            setItemCount((count: number) => count + 1)
+                          }
                         >
                           증가
                         </button>
                         <button
                           type="button"
                           className="block w-[23px] h-[17px] indent-[-9999px] bg-countDown mt-[-2px] bg-no-repeat bg-left-top"
+                          onClick={() =>
+                            itemCount !== 1 &&
+                            setItemCount((count) => count - 1)
+                          }
                         >
                           감소
                         </button>
@@ -167,6 +202,42 @@ const ProductDetail = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div id="detail">
+            <div className="pt-60">
+              <ul className="w-full h-[50px]">
+                {tabItems.map((item) => {
+                  return (
+                    <li
+                      className="float-left text-[12px] text-center w-1/4 cursor-pointer"
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                    >
+                      <span
+                        className={
+                          item.id === activeTab
+                            ? "block border-[#333] border-b py-16 text-[16px] font-bold text-[#333]"
+                            : "block border-[#bbbbbb] border-b py-16 text-[16px] text-[#999999]"
+                        }
+                      >
+                        {item.title}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            <div className="mt-40 text-center min-h-48">
+              {activeTab === 2 ? (
+                <ExchangeAndRefund />
+              ) : activeTab === 3 ? (
+                <Review />
+              ) : activeTab === 4 ? (
+                <Qna />
+              ) : (
+                <DetailInfo />
+              )}
             </div>
           </div>
         </div>
