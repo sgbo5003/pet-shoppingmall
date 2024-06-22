@@ -228,7 +228,7 @@ const ProductDetail = () => {
                 })}
               </ul>
             </div>
-            <div className="mt-40 text-center min-h-48">
+            <div className="mt-40 min-h-48">
               {activeTab === 2 ? (
                 <ExchangeAndRefund />
               ) : activeTab === 3 ? (
