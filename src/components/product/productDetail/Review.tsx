@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Pagination from "../pagination/index.tsx";
+import Pagination from "../../pagination/index.tsx";
 
 const Review = () => {
   const [page, setPage] = useState<number>(1);

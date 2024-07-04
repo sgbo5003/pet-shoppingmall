@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { api } from "../api/index.ts";
+import { api } from "../../api/index.ts";
 import {
   ProductDetailResponse,
   initProductDetailResponse,
-} from "../api/dto/product/index.ts";
+} from "../../api/dto/product/index.ts";
 import { AxiosError } from "axios";
-import { ErrorDto } from "../api/dto";
-import { useParams } from "react-router-dom";
+import { ErrorDto } from "../../api/dto/index.ts";
+import { useNavigate, useParams } from "react-router-dom";
 import DetailInfo from "./productDetail/DetailInfo.tsx";
 import ExchangeAndRefund from "./productDetail/ExchangeAndRefund.tsx";
 import Review from "./productDetail/Review.tsx";
@@ -26,13 +26,15 @@ const ProductDetail = () => {
     useState<ProductDetailResponse>(initProductDetailResponse);
   const [itemCount, setItemCount] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<number>(1);
+  const navigate = useNavigate();
+
   const getProductDetail = async () => {
     try {
       const response = await api.get<ProductDetailResponse>(
         `/product/${params.id}`
       );
       console.log("getProductDetail response", response);
-      setProductDetailInfo(response.data);
+      await setProductDetailInfo(response.data);
     } catch (e) {
       const err = e as AxiosError<ErrorDto>;
       console.log("err", err);
@@ -42,6 +44,11 @@ const ProductDetail = () => {
   useEffect(() => {
     getProductDetail();
   }, []);
+
+  console.log(
+    "123",
+    (Number(productDetailInfo.regular_price) * itemCount).toLocaleString()
+  );
 
   return (
     <div className="relative w-full mx-auto my-0">
@@ -196,6 +203,7 @@ const ProductDetail = () => {
                     <button
                       type="button"
                       className="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick={() => navigate(`/product/${params.id}/checkout`)}
                     >
                       바로 구매
                     </button>

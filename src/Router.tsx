@@ -5,8 +5,9 @@ import Home from "./components/Home.tsx";
 import Login from "./components/Login.tsx";
 import Join from "./components/Join.tsx";
 import Admin from "./components/Admin.tsx";
-import ProductDetail from "./components/ProductDetail.tsx";
+import ProductDetail from "./components/product/ProductDetail.tsx";
 import ScrollToTop from "./components/scrollToTop/index.ts";
+import ProductCheckOut from "./components/product/ProductCheckOut.tsx";
 
 const Router = () => {
   return (
@@ -19,6 +20,7 @@ const Router = () => {
         <Route path="/join" element={<Join />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/product/:id/checkout" element={<ProductCheckOut />} />
       </Routes>
     </BrowserRouter>
   );
