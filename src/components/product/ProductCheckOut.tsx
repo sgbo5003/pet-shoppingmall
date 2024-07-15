@@ -107,14 +107,42 @@ const ProductCheckOut = () => {
                     >
                       배송지 확인
                     </label>
-                    <div className="mt-[0.25rem]">
-                      <input
-                        type="text"
-                        name="company"
-                        id="company"
-                        className="block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
-                      />
-                    </div>
+                    <fieldset className="mt-[1rem]">
+                      <legend className="absolute w-[1px] h-[1px] p-0 m-[-1px] overflow-hidden whitespace-nowrap border-0">
+                        배송지 방식 선택
+                      </legend>
+                      <div className="space-y-4 sm:items-center sm:flex sm:space-y-0 sm:space-x-10">
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            name="shippingNew"
+                            id="shippingNew"
+                            className="w-4 h-4 text-blue-600 bg-white border-gray-300 focus:ring-blue-500"
+                            checked
+                          />
+                          <label
+                            htmlFor="shippingNew"
+                            className="text-gray-700 font-medium text-sm block ml-[0.75rem]"
+                          >
+                            직접 입력
+                          </label>
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            name="shippingSameCheck"
+                            id="shippingSameCheck"
+                            className="w-4 h-4 text-blue-600 bg-white border-gray-300 focus:ring-blue-500"
+                          />
+                          <label
+                            htmlFor="shippingSameCheck"
+                            className="text-gray-700 font-medium text-sm block ml-[0.75rem]"
+                          >
+                            주문자정보와 동일
+                          </label>
+                        </div>
+                      </div>
+                    </fieldset>
                   </div>
                   <div className="mt-[1rem]">
                     <label
