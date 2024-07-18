@@ -75,9 +75,9 @@ const Header = () => {
                       </Link>
                     </li>
                     <li className="float-left ml-20">
-                      <a className="leading-[50px]" href="#!">
+                      <Link className="leading-[50px]" to="/myPage">
                         마이페이지
-                      </a>
+                      </Link>
                     </li>
                     <li className="float-left ml-20">
                       <a className="leading-[50px]" href="#!">

@@ -227,6 +227,64 @@ const ProductCheckOut = () => {
                 </div>
               </div>
             </div>
+            <div className="lg:mt-0 mt-[2.5rem]">
+              <h2 className="text-lg font-medium text-gray-900">결제 정보</h2>
+              <div className="border-gray-200 border rounded-lg mt-[1rem] shadow-sm">
+                <ul>
+                  <li className="sm:px-[1.5rem] py-[1.5rem] px-[1rem] flex">
+                    <div className="shrink-0">
+                      <img
+                        src=""
+                        alt=""
+                        className="block w-20 h-auto max-w-full align-middle rounded-md"
+                      />
+                    </div>
+                    <div className="flex-col flex-1 flex ml-[1.5rem]">
+                      <div className="flex">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm">
+                            <a href="#!" className="font-medium text-gray-700">
+                              상품명
+                            </a>
+                          </h4>
+                        </div>
+                      </div>
+                      <div className="pt-[0.5rem] justify-between items-end flex-1 flex">
+                        <p className="text-gray-900	font-medium text-sm mt-[0.25rem]">
+                          10,000
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <dl className="sm:px-[1.5rem] py-[1.5rem] px-[1rem] border-gray-200 border-t space-y-6">
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm">합계</dt>
+                    <dd className="text-sm font-medium text-gray-900">
+                      10,000
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm">배송비</dt>
+                    <dd className="text-sm font-medium text-gray-900">2,000</dd>
+                  </div>
+                  <div className="flex items-center justify-between pt-[1.5rem] border-gray-200 border-t">
+                    <dt className="text-base font-medium">총 합계</dt>
+                    <dd className="text-base font-medium text-gray-900">
+                      12,000
+                    </dd>
+                  </div>
+                </dl>
+                <div className="sm:px-[1.5rem] py-[1.5rem] px-[1rem] border-gray-200 border-t">
+                  <button
+                    type="button"
+                    className="text-base font-medium text-white py-[0.75rem] px-[1rem] bg-indigo-600 border border-transparent rounded-md w-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    결제하기
+                  </button>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
       </div>

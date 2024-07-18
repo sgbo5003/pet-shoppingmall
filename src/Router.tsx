@@ -8,6 +8,7 @@ import Admin from "./components/Admin.tsx";
 import ProductDetail from "./components/product/ProductDetail.tsx";
 import ScrollToTop from "./components/scrollToTop/index.ts";
 import ProductCheckOut from "./components/product/ProductCheckOut.tsx";
+import MyPage from "./components/Mypage.tsx";
 
 const Router = () => {
   return (
@@ -19,6 +20,7 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/join" element={<Join />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/myPage" element={<MyPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/product/:id/checkout" element={<ProductCheckOut />} />
       </Routes>
