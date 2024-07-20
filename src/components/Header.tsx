@@ -84,11 +84,13 @@ const Header = () => {
                         장바구니
                       </a>
                     </li>
-                    <li className="float-left ml-20">
-                      <Link className="leading-[50px]" to="/admin">
-                        Admin
-                      </Link>
-                    </li>
+                    {userInfo.adminYn === "Y" && (
+                      <li className="float-left ml-20">
+                        <Link className="leading-[50px]" to="/admin">
+                          Admin
+                        </Link>
+                      </li>
+                    )}
                   </>
                 ) : (
                   <>

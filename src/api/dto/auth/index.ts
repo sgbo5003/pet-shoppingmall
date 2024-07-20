@@ -9,6 +9,7 @@ export interface LoginRequest {
   password: string;
 }
 export interface LoginResponse {
+  id: number;
   email: string;
   name: string;
   adminYn: string;

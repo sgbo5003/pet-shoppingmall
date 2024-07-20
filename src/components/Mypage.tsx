@@ -1,30 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import type { CustomFlowbiteTheme } from "flowbite-react";
+import { AxiosError } from "axios";
+import { useFormik } from "formik";
+import {
+  UserWalletPointUpdate,
+  ErrorDto,
+  initUserWalletResponse,
+  UserWalletResponse,
+} from "../api/dto/index.ts";
+import * as Yup from "yup";
+import { api } from "../api/index.ts";
+import useUserStore from "../stores/useUserStore.ts";
+
+const customTheme: CustomFlowbiteTheme["modal"] = {
+  header: {
+    base: "flex items-start justify-between rounded-t border-b p-[1rem] md:p-[1.25rem] dark:border-gray-600",
+    title: "text-xl font-semibold text-gray-900 dark:text-white",
+  },
+  body: {
+    base: "p-[1rem] md:p-[1.25rem] space-y-4",
+  },
+  footer: {
+    base: "flex items-center space-x-2 rounded-b border-gray-200 p-[1.5rem] dark:border-gray-600 border-t",
+  },
+};
+export interface initFormValues {
+  point: string;
+}
+
+const initialValues: initFormValues = {
+  point: "",
+};
+
+const validationSchema = Yup.object().shape({
+  point: Yup.string().required("필수 입력 항목입니다."),
+});
 
 const MyPage = () => {
+  const { userInfo } = useUserStore();
   const [openModal, setOpenModal] = useState(false);
   const [email, setEmail] = useState("");
+  const [userWalletResponse, setUserWalletResponse] =
+    useState<UserWalletResponse>(initUserWalletResponse);
 
-  const customTheme: CustomFlowbiteTheme["modal"] = {
-    body: {
-      base: "flex-1 overflow-auto p-6",
-      popup: "pt-0",
+  const formik = useFormik({
+    initialValues,
+    validationSchema: validationSchema,
+    validateOnBlur: false,
+    validateOnChange: false,
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      console.log("values123", values);
+      try {
+        setSubmitting(true);
+        await api.patch<UserWalletPointUpdate>(
+          `/userWallet/point/${userInfo.id}`,
+          { point: Number(values.point) }
+        );
+        await setOpenModal(false);
+        await getUserWallet();
+      } catch (e) {
+        const error = e as AxiosError<ErrorDto>;
+        setStatus(error.response?.data.errorMessage);
+        setSubmitting(false);
+        alert(error.response?.data);
+      }
     },
-    header: {
-      base: "flex items-start justify-between rounded-t border-b p-5 dark:border-gray-600",
-      popup: "border-b-0 p-2",
-      title: "text-xl font-medium text-gray-900 dark:text-white",
-      close: {
-        base: "ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
-        icon: "h-5 w-5",
-      },
-    },
-    footer: {
-      base: "flex items-center space-x-2 rounded-b border-gray-200 p-6 dark:border-gray-600",
-      popup: "border-t",
-    },
+  });
+
+  const getUserWallet = async () => {
+    try {
+      const response = await api.get<UserWalletResponse>(
+        `/userWallet/${userInfo.id}`
+      );
+      console.log("getUserWallet response", response);
+      setUserWalletResponse(response.data ?? initUserWalletResponse);
+    } catch (e) {
+      const err = e as AxiosError<ErrorDto>;
+      console.log("err", err);
+    }
   };
+
+  useEffect(() => {
+    getUserWallet();
+  }, []);
 
   return (
     <div className="relative w-full mx-auto my-0">
@@ -50,7 +109,7 @@ const MyPage = () => {
                   />
                 </span>
                 <div className="leading-5">
-                  <p>박상준님의</p>
+                  <p>{userInfo.name}님의</p>
                   <p>
                     회원등급은{" "}
                     <span className="text-[#333]">일반회원등급 </span>
@@ -74,7 +133,7 @@ const MyPage = () => {
                       </em>
                       <a href="#!">
                         <strong className="text-[20px] text-[#000] pr-3">
-                          2,000
+                          {userWalletResponse.point}
                         </strong>
                       </a>
                       원
@@ -90,56 +149,56 @@ const MyPage = () => {
         show={openModal}
         size="md"
         onClose={() => setOpenModal(false)}
-        popup
+        // popup
         theme={customTheme}
       >
         <Modal.Header>포인트 충전</Modal.Header>
-        <Modal.Body>
-          <div className="space-y-6">
-            <div>
-              <div className="block mb-2">
-                <Label htmlFor="email" value="Your email" />
+        <form onSubmit={formik.handleSubmit}>
+          <Modal.Body>
+            <div className="space-y-6">
+              <div>
+                <label
+                  htmlFor="origin"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  포인트
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    {...formik.getFieldProps("point")}
+                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                      formik.touched.point && formik.errors.point
+                        ? "text-red-900"
+                        : "text-gray-900"
+                    } shadow-sm ring-1 ring-inset ${
+                      formik.touched.point && formik.errors.point
+                        ? "ring-red-300"
+                        : "ring-gray-300"
+                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                      formik.touched.point && formik.errors.point
+                        ? "focus:ring-red-500"
+                        : "focus:ring-indigo-600"
+                    } sm:text-sm sm:leading-6`}
+                  />
+                </div>
+                {formik.touched.point && formik.errors.point ? (
+                  <p id="errorMessage" className="text-red-600 mt-[0.5rem]">
+                    {formik.errors.point}
+                  </p>
+                ) : null}
               </div>
-              <TextInput
-                id="email"
-                placeholder="name@company.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
             </div>
-            <div>
-              <div className="block mb-2">
-                <Label htmlFor="password" value="Your password" />
-              </div>
-              <TextInput id="password" type="password" required />
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox id="remember" />
-                <Label htmlFor="remember">Remember me</Label>
-              </div>
-              <a
-                href="#"
-                className="text-sm text-cyan-700 hover:underline dark:text-cyan-500"
-              >
-                Lost Password?
-              </a>
-            </div>
-            <div className="w-full">
-              <Button>Log in to your account</Button>
-            </div>
-            <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
-              Not registered?&nbsp;
-              <a
-                href="#"
-                className="text-cyan-700 hover:underline dark:text-cyan-500"
-              >
-                Create account
-              </a>
-            </div>
-          </div>
-        </Modal.Body>
+          </Modal.Body>
+          <Modal.Footer className="justify-end">
+            <button
+              type="submit"
+              className="px-12 py-8 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              충전
+            </button>
+          </Modal.Footer>
+        </form>
       </Modal>
     </div>
   );
