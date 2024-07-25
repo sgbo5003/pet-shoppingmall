@@ -26,6 +26,7 @@ interface InitialValuesProps {
   confirmpassword: string;
   name: string;
   phoneNumber: string;
+  address: string;
 }
 
 const initialValues: InitialValuesProps = {
@@ -34,6 +35,7 @@ const initialValues: InitialValuesProps = {
   confirmpassword: "",
   name: "",
   phoneNumber: "",
+  address: "",
 };
 
 const signupSchema = Yup.object().shape({
@@ -63,6 +65,7 @@ const signupSchema = Yup.object().shape({
     .max(20, "최대 20글자 이하이여야 합니다.") // Maximum 20 symbols
     .matches(/^[0-9()+-\s]{6,20}$/, "올바르지 않은 형식입니다.") // Invalid format
     .required("필수 입력 항목입니다."), // Phone Number is required
+  address: Yup.string().required("필수 입력 항목입니다."),
 });
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -88,6 +91,7 @@ const Join = () => {
           password: values.password,
           name: values.name,
           phoneNumber: values.phoneNumber,
+          address: values.address,
         };
         await api.post<SignUpRequest>("/auth/join", obj);
         await navigate("/login");
@@ -209,6 +213,20 @@ const Join = () => {
               helperText={
                 formik.touched.phoneNumber && formik.errors.phoneNumber
               }
+            />
+            <TextField
+              {...formik.getFieldProps("address")}
+              margin="dense"
+              required
+              fullWidth
+              id="address"
+              label="주소"
+              name="address"
+              error={
+                formik.touched.address &&
+                formik.errors.address === "필수 입력 항목입니다."
+              }
+              helperText={formik.touched.address && formik.errors.address}
             />
             <Grid
               container

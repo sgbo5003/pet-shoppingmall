@@ -45,11 +45,6 @@ const ProductDetail = () => {
     getProductDetail();
   }, []);
 
-  console.log(
-    "123",
-    (Number(productDetailInfo.regular_price) * itemCount).toLocaleString()
-  );
-
   return (
     <div className="relative w-full mx-auto my-0">
       <div className="max-w-[1240px] mx-auto my-0">

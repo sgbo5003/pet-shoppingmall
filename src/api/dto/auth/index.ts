@@ -3,6 +3,7 @@ export interface SignUpRequest {
   password: string;
   name: string;
   phoneNumber: string;
+  address: string;
 }
 export interface LoginRequest {
   email: string;
@@ -13,4 +14,5 @@ export interface LoginResponse {
   email: string;
   name: string;
   adminYn: string;
+  address: string;
 }
