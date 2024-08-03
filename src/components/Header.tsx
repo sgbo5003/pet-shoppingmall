@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserStore from "../stores/useUserStore.ts";
 import { api } from "../api/index.ts";
+import { AxiosError } from "axios";
+import { ErrorDto } from "../api/dto/index.ts";
 
 const Header = () => {
   const { userInfo, deleteUserInfo } = useUserStore();
@@ -9,11 +11,28 @@ const Header = () => {
   const location = useLocation();
   const Navigate = useNavigate();
 
-  const logout = async () => {
-    await api.get("/auth/logout");
+  const logout = async (sessionYn) => {
     await deleteUserInfo();
-    await Navigate("/");
+    if (sessionYn === "Y") {
+      await api.get("/auth/logout");
+      await Navigate("/");
+    }
   };
+
+  const checkSessionStatus = async () => {
+    try {
+      const response = await api.get("/session/status");
+      if (response.data.loggedIn) {
+      } else {
+        // await alert("세션이 만료되었습니다.");
+        await logout("N");
+      }
+    } catch (e) {
+      const err = e as AxiosError<ErrorDto>;
+      console.log("err", err);
+    }
+  };
+
   useEffect(() => {
     // if (
     //   localStorage.getItem("userStorage") === "" ||
@@ -22,12 +41,14 @@ const Header = () => {
     //   deleteUserInfo();
     //   return;
     // }
+    checkSessionStatus();
     const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
     if (
       location.pathname.startsWith("/login") ||
       location.pathname.startsWith("/join")
     ) {
       if (userStorage.state.userInfo.email !== "") {
+        // 로그인 되어있을시
         Navigate("/");
         return;
       }
@@ -43,6 +64,7 @@ const Header = () => {
     //     return;
     //   }
     // }
+    // }, [location.pathname, userInfo]);
   }, [location.pathname, userInfo]);
   return (
     <div id="header" className="relative w-full">
@@ -65,7 +87,7 @@ const Header = () => {
                 {userInfo.email !== "" ? (
                   <>
                     <li className="float-left ml-20">
-                      <a className="leading-[50px]" onClick={() => logout()}>
+                      <a className="leading-[50px]" onClick={() => logout("Y")}>
                         로그아웃
                       </a>
                     </li>

@@ -9,7 +9,7 @@ import {
   initProductDetailResponse,
   ProductDetailResponse,
 } from "../../api/dto/product/index.ts";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 export interface checkOutFormValues {
   // 주문자 정보
@@ -53,9 +53,15 @@ const validationSchema = Yup.object().shape({
   shippingPhone2: Yup.string().required("필수 입력 항목입니다."),
 });
 
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
+
 const ProductCheckOut = () => {
   const { userInfo } = useUserStore();
   const params = useParams();
+  const query = useQuery();
+  const quantity = query.get("quantity");
   const [productDetailInfo, setProductDetailInfo] =
     useState<ProductDetailResponse>(initProductDetailResponse);
 
@@ -540,7 +546,7 @@ const ProductCheckOut = () => {
                           productDetailInfo.img1
                         }
                         alt={productDetailInfo.name}
-                        className="block w-20 h-auto max-w-full align-middle rounded-md"
+                        className="block w-20 h-full max-w-full align-middle rounded-md"
                       />
                     </div>
                     <div className="flex-col flex-1 flex ml-[1.5rem]">
@@ -551,11 +557,16 @@ const ProductCheckOut = () => {
                               {productDetailInfo.name}
                             </a>
                           </h4>
+                          {/* <p className="text-gray-500 text-sm mt-[0.25rem]">
+                            수량 2개
+                          </p> */}
                         </div>
                       </div>
                       <div className="pt-[0.5rem] justify-between items-end flex-1 flex">
                         <p className="text-gray-900	font-medium text-sm mt-[0.25rem]">
-                          10,000
+                          {(
+                            Number(productDetailInfo.price) * Number(quantity)
+                          ).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -565,17 +576,24 @@ const ProductCheckOut = () => {
                   <div className="flex items-center justify-between">
                     <dt className="text-sm">합계</dt>
                     <dd className="text-sm font-medium text-gray-900">
-                      10,000
+                      {(
+                        Number(productDetailInfo.price) * Number(quantity)
+                      ).toLocaleString()}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-sm">배송비</dt>
-                    <dd className="text-sm font-medium text-gray-900">2,000</dd>
+                    <dd className="text-sm font-medium text-gray-900">
+                      {productDetailInfo.delivery_fee.toLocaleString()}
+                    </dd>
                   </div>
                   <div className="flex items-center justify-between pt-[1.5rem] border-gray-200 border-t">
                     <dt className="text-base font-medium">총 합계</dt>
                     <dd className="text-base font-medium text-gray-900">
-                      12,000
+                      {(
+                        Number(productDetailInfo.price) * Number(quantity) +
+                        productDetailInfo.delivery_fee
+                      ).toLocaleString()}
                     </dd>
                   </div>
                 </dl>
