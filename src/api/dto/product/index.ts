@@ -57,3 +57,19 @@ export const initProductDetailResponse = {
   updatedAt: null,
   UserId: 0,
 };
+
+export interface CheckoutProductRequest {
+  name: string;
+  address: string;
+  orderPhone1: string;
+  orderPhone2: string;
+  email: string;
+  shippingName: string;
+  shippingAddress: string;
+  shippingPhone1: string;
+  shippingPhone2: string;
+  request: string;
+  quantity: number;
+  price: number;
+  productId: number;
+}

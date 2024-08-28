@@ -6,10 +6,11 @@ import { ErrorDto } from "../../api/dto/index.ts";
 import useUserStore from "../../stores/useUserStore.ts";
 import { api } from "../../api/index.ts";
 import {
+  CheckoutProductRequest,
   initProductDetailResponse,
   ProductDetailResponse,
 } from "../../api/dto/product/index.ts";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export interface checkOutFormValues {
   // 주문자 정보
@@ -64,16 +65,26 @@ const ProductCheckOut = () => {
   const quantity = query.get("quantity");
   const [productDetailInfo, setProductDetailInfo] =
     useState<ProductDetailResponse>(initProductDetailResponse);
+  const Navigate = useNavigate();
 
   const formik = useFormik({
     initialValues,
-    validationSchema: validationSchema,
+    validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       console.log("values123", values);
       try {
         setSubmitting(true);
+        const obj: CheckoutProductRequest = {
+          ...values,
+          quantity: Number(quantity),
+          price: Number(productDetailInfo.price) * Number(quantity),
+          productId: Number(params.id),
+        };
+        await api.post<CheckoutProductRequest>("/product/checkout", obj);
+        await alert("상품 등록 성공");
+        await Navigate("/");
       } catch (e) {
         const error = e as AxiosError<ErrorDto>;
         setStatus(error.response?.data.errorMessage);
