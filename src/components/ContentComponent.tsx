@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/index.ts";
-import { newProductListResponse } from "../api/dto/product";
+import { ProductListResponse } from "../api/dto/product";
 import { AxiosError } from "axios";
 import { ErrorDto } from "../api/dto";
 import { Link } from "react-router-dom";
@@ -42,11 +42,25 @@ const bestItems = [
 
 const ContentComponent = () => {
   const [newProductList, setNewProductList] = useState<
-    Array<newProductListResponse>
+    Array<ProductListResponse>
   >([]);
+  const [bestProductList, setBestProductList] = useState<
+    Array<ProductListResponse>
+  >([]);
+
+  const getBestProductList = async () => {
+    try {
+      const response = await api.get<ProductListResponse[]>("/product/best");
+      console.log("getBestProductList response", response);
+      setBestProductList(response.data);
+    } catch (e) {
+      const err = e as AxiosError<ErrorDto>;
+      console.log("err", err);
+    }
+  };
   const getNewProductList = async () => {
     try {
-      const response = await api.get<newProductListResponse[]>("/product/new");
+      const response = await api.get<ProductListResponse[]>("/product/new");
       console.log("getNewProductList response", response);
       setNewProductList(response.data);
     } catch (e) {
@@ -56,6 +70,7 @@ const ContentComponent = () => {
   };
 
   useEffect(() => {
+    getBestProductList();
     getNewProductList();
   }, []);
 

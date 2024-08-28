@@ -9,7 +9,7 @@ export interface ProductRequest {
   price: number;
   delivery_fee: number;
 }
-export interface newProductListResponse {
+export interface ProductListResponse {
   id: string;
   name: string;
   img1: string;
