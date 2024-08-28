@@ -83,7 +83,7 @@ const ProductCheckOut = () => {
           productId: Number(params.id),
         };
         await api.post<CheckoutProductRequest>("/product/checkout", obj);
-        await alert("상품 등록 성공");
+        await alert("상품 주문 성공");
         await Navigate("/");
       } catch (e) {
         const error = e as AxiosError<ErrorDto>;
