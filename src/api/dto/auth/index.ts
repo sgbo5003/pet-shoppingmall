@@ -15,4 +15,5 @@ export interface LoginResponse {
   name: string;
   adminYn: string;
   address: string;
+  point: number;
 }

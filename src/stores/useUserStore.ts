@@ -11,7 +11,14 @@ interface UserInfoActions {
   deleteUserInfo: () => void;
 }
 
-const defaultState = { id: 0, email: "", name: "", adminYn: "", address: "" };
+const defaultState = {
+  id: 0,
+  email: "",
+  name: "",
+  adminYn: "",
+  address: "",
+  point: 0,
+};
 
 const useUserStore = create(
   persist<UserInfoState & UserInfoActions>(

@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const MyPage = () => {
-  const { userInfo } = useUserStore();
+  const { userInfo, setUserInfo } = useUserStore();
   const [openModal, setOpenModal] = useState(false);
   const [email, setEmail] = useState("");
   const [userWalletResponse, setUserWalletResponse] =
@@ -75,6 +75,7 @@ const MyPage = () => {
       );
       console.log("getUserWallet response", response);
       setUserWalletResponse(response.data ?? initUserWalletResponse);
+      setUserInfo({ ...userInfo, point: response.data.point });
     } catch (e) {
       const err = e as AxiosError<ErrorDto>;
       console.log("err", err);
