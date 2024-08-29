@@ -17,6 +17,11 @@ export interface ProductListResponse {
   price: number;
   delivery_fee: number;
 }
+export interface BestProductListResponse {
+  Product: ProductListResponse;
+  ProductId: number;
+  totalSold: string;
+}
 
 export interface ProductDetailResponse {
   id: number;

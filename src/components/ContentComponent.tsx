@@ -1,56 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/index.ts";
-import { ProductListResponse } from "../api/dto/product";
+import {
+  BestProductListResponse,
+  ProductListResponse,
+} from "../api/dto/product";
 import { AxiosError } from "axios";
 import { ErrorDto } from "../api/dto";
 import { Link } from "react-router-dom";
 
-const bestItems = [
-  {
-    id: 1,
-    href: "#!",
-    imageSrc: "/image/bestItemImg1.jpg",
-    imageAlt: "베스트아이템1",
-    name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
-    price: 1000,
-  },
-  {
-    id: 2,
-    href: "#!",
-    imageSrc: "/image/bestItemImg1.jpg",
-    imageAlt: "베스트아이템2",
-    name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
-    price: 1000,
-  },
-  {
-    id: 3,
-    href: "#!",
-    imageSrc: "/image/bestItemImg1.jpg",
-    imageAlt: "베스트아이템3",
-    name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
-    price: 1000,
-  },
-  {
-    id: 4,
-    href: "#!",
-    imageSrc: "/image/bestItemImg1.jpg",
-    imageAlt: "베스트아이템4",
-    name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
-    price: 1000,
-  },
-];
+// const bestItems = [
+//   {
+//     id: 1,
+//     href: "#!",
+//     imageSrc: "/image/bestItemImg1.jpg",
+//     imageAlt: "베스트아이템1",
+//     name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
+//     price: 1000,
+//   },
+//   {
+//     id: 2,
+//     href: "#!",
+//     imageSrc: "/image/bestItemImg1.jpg",
+//     imageAlt: "베스트아이템2",
+//     name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
+//     price: 1000,
+//   },
+//   {
+//     id: 3,
+//     href: "#!",
+//     imageSrc: "/image/bestItemImg1.jpg",
+//     imageAlt: "베스트아이템3",
+//     name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
+//     price: 1000,
+//   },
+//   {
+//     id: 4,
+//     href: "#!",
+//     imageSrc: "/image/bestItemImg1.jpg",
+//     imageAlt: "베스트아이템4",
+//     name: "강아지 자동줄 3m 코드타입 1p 강아지 리드줄 자동줄 개줄 자동",
+//     price: 1000,
+//   },
+// ];
 
 const ContentComponent = () => {
   const [newProductList, setNewProductList] = useState<
     Array<ProductListResponse>
   >([]);
   const [bestProductList, setBestProductList] = useState<
-    Array<ProductListResponse>
+    Array<BestProductListResponse>
   >([]);
 
   const getBestProductList = async () => {
     try {
-      const response = await api.get<ProductListResponse[]>("/product/best");
+      const response = await api.get<BestProductListResponse[]>(
+        "/product/best"
+      );
       console.log("getBestProductList response", response);
       setBestProductList(response.data);
     } catch (e) {
@@ -86,22 +91,26 @@ const ContentComponent = () => {
           <h2 className="sr-only">best item</h2>
           <div>
             <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-              {bestItems.map((item) => (
-                <li key={item.id} className="group">
-                  <a href={item.href} className="group">
+              {bestProductList.map((item, idx) => (
+                <li key={idx} className="group">
+                  <Link to={`/product/${item.ProductId}`} className="group">
                     <div className="w-full overflow-hidden bg-gray-200 rounded-lg aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7">
                       <img
-                        src={item.imageSrc}
-                        alt={item.imageAlt}
+                        src={
+                          process.env.REACT_APP_SERVER_IMG_URL +
+                          item.Product.img1
+                        }
+                        alt={item.Product.name}
                         className="object-cover object-center w-full h-full group-hover:opacity-75"
                       />
                     </div>
                     <h3 className="mt-[1rem] text-sm text-gray-700 break-keep">
-                      {item.name}
+                      {item.Product.name}
                     </h3>
-                  </a>
+                  </Link>
                   <p className="mt-[0.25rem] text-lg font-medium text-gray-900">
-                    {item.price}원
+                    {item.Product.price}원{" "}
+                    <del>{item.Product.regular_price}원</del>
                   </p>
                 </li>
               ))}
