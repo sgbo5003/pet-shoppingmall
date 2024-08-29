@@ -74,6 +74,14 @@ const ProductCheckOut = () => {
     validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       console.log("values123", values);
+      if (
+        userInfo.point <
+        Number(productDetailInfo.price) * Number(quantity) +
+          productDetailInfo.delivery_fee
+      ) {
+        alert("보유 포인트가 부족합니다.");
+        return;
+      }
       try {
         setSubmitting(true);
         const obj: CheckoutProductRequest = {
