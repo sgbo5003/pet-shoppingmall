@@ -92,7 +92,7 @@ const Header = () => {
                       </a>
                     </li>
                     <li className="float-left ml-20">
-                      <Link className="leading-[50px]" to="/join">
+                      <Link className="leading-[50px]" to="/myInfo">
                         회원정보수정
                       </Link>
                     </li>
