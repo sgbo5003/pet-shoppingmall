@@ -1,5 +1,73 @@
-import React from "react";
+import { useFormik } from "formik";
+import React, { useEffect } from "react";
+import * as Yup from "yup";
+import useUserStore from "../stores/useUserStore.ts";
+
+export interface myInfoFormValues {
+  name: string;
+  phoneNumber: string;
+  password: string;
+  newPassword: string;
+  newPasswordConfirm: string;
+  address: string;
+}
+const initialValues: myInfoFormValues = {
+  name: "",
+  phoneNumber: "",
+  password: "",
+  newPassword: "",
+  newPasswordConfirm: "",
+  address: "",
+};
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, "최소 3글자 이상이여야 합니다.")
+    .max(50, "최대 50글자 이하이여야 합니다.")
+    .required("필수 입력 항목입니다."),
+  address: Yup.string().required("필수 입력 항목입니다."),
+  newPassword: Yup.string()
+    .when("password", {
+      is: (val: string) => val && val.length > 0,
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "비밀번호가 일치하지 않습니다."
+      ),
+    })
+    .min(8, "최소 8글자 이상이여야 합니다.")
+    .max(20, "최대 20글자 이하이여야 합니다."),
+  confirmpassword: Yup.string()
+    .required("필수 입력 항목입니다.") // Password confirmation is required
+    .when("newPassword", {
+      is: (val: string) => val && val.length > 0,
+      then: Yup.string().oneOf(
+        [Yup.ref("newPassword")],
+        "비밀번호가 일치하지 않습니다."
+      ),
+    }),
+});
+
 const MyInfo = () => {
+  const { userInfo } = useUserStore();
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: false,
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      console.log("values123", values);
+    },
+  });
+
+  useEffect(() => {
+    formik.setValues({
+      ...formik.values,
+      name: userInfo.name,
+      address: userInfo.address,
+    });
+  }, []);
+
   return (
     <div className="relative w-full mx-auto my-0">
       <div className="max-w-[1240px] mx-auto my-0">
@@ -11,7 +79,7 @@ const MyInfo = () => {
               </h2>
             </div>
             <div>
-              <form>
+              <form onSubmit={formik.handleSubmit}>
                 <div>
                   <h3 className="pb-17 text-lg text-[#222222] inline-block">
                     기본정보
@@ -25,23 +93,262 @@ const MyInfo = () => {
                       <tbody>
                         <tr>
                           <th className="text-left border-b border-[#dcdcdc] bg-[#fbfbfb] py-10 px-25 border-l-0">
-                            <span>아이디</span>
+                            <span>이메일</span>
                           </th>
                           <td className="py-15 pl-15 border-b border-[#dcdcdc]">
-                            sgbo5003
+                            {userInfo.email}
                           </td>
                         </tr>
                         <tr>
                           <th className="text-left border-b border-[#dcdcdc] bg-[#fbfbfb] py-10 px-25 border-l-0">
-                            <span>아이디</span>
+                            <span>비밀번호</span>
                           </th>
                           <td className="py-15 pl-15 border-b border-[#dcdcdc]">
-                            sgbo5003
+                            <dl className="py-5">
+                              <dt className="inline-block w-[120px]">
+                                현재 비밀번호
+                              </dt>
+                              <dd className="inline-block">
+                                <div className="w-4/5">
+                                  <input
+                                    type="text"
+                                    {...formik.getFieldProps("password")}
+                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                      formik.touched.password &&
+                                      formik.errors.password
+                                        ? "text-red-900"
+                                        : "text-gray-900"
+                                    } shadow-sm ring-1 ring-inset ${
+                                      formik.touched.password &&
+                                      formik.errors.password
+                                        ? "ring-red-300"
+                                        : "ring-gray-300"
+                                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                      formik.touched.password &&
+                                      formik.errors.password
+                                        ? "focus:ring-red-500"
+                                        : "focus:ring-indigo-600"
+                                    } sm:text-sm sm:leading-6`}
+                                  />
+                                  {formik.touched.password &&
+                                  formik.errors.password ? (
+                                    <p
+                                      id="errorMessage"
+                                      className="text-red-600 mt-[0.5rem]"
+                                    >
+                                      {formik.errors.password}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              </dd>
+                            </dl>
+                            <dl className="py-5">
+                              <dt className="inline-block w-[120px]">
+                                새 비밀번호
+                              </dt>
+                              <dd className="inline-block">
+                                <div className="w-4/5">
+                                  <input
+                                    type="text"
+                                    {...formik.getFieldProps("newPassword")}
+                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                      formik.touched.newPassword &&
+                                      formik.errors.newPassword
+                                        ? "text-red-900"
+                                        : "text-gray-900"
+                                    } shadow-sm ring-1 ring-inset ${
+                                      formik.touched.newPassword &&
+                                      formik.errors.newPassword
+                                        ? "ring-red-300"
+                                        : "ring-gray-300"
+                                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                      formik.touched.newPassword &&
+                                      formik.errors.newPassword
+                                        ? "focus:ring-red-500"
+                                        : "focus:ring-indigo-600"
+                                    } sm:text-sm sm:leading-6`}
+                                  />
+                                  {formik.touched.newPassword &&
+                                  formik.errors.newPassword ? (
+                                    <p
+                                      id="errorMessage"
+                                      className="text-red-600 mt-[0.5rem]"
+                                    >
+                                      {formik.errors.newPassword}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              </dd>
+                            </dl>
+                            <dl className="py-5">
+                              <dt className="inline-block w-[120px]">
+                                새 비밀번호 확인
+                              </dt>
+                              <dd className="inline-block">
+                                <div className="w-4/5">
+                                  <input
+                                    type="text"
+                                    {...formik.getFieldProps(
+                                      "newPasswordConfirm"
+                                    )}
+                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                      formik.touched.newPasswordConfirm &&
+                                      formik.errors.newPasswordConfirm
+                                        ? "text-red-900"
+                                        : "text-gray-900"
+                                    } shadow-sm ring-1 ring-inset ${
+                                      formik.touched.newPasswordConfirm &&
+                                      formik.errors.newPasswordConfirm
+                                        ? "ring-red-300"
+                                        : "ring-gray-300"
+                                    } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                      formik.touched.newPasswordConfirm &&
+                                      formik.errors.newPasswordConfirm
+                                        ? "focus:ring-red-500"
+                                        : "focus:ring-indigo-600"
+                                    } sm:text-sm sm:leading-6`}
+                                  />
+                                  {formik.touched.newPasswordConfirm &&
+                                  formik.errors.newPasswordConfirm ? (
+                                    <p
+                                      id="errorMessage"
+                                      className="text-red-600 mt-[0.5rem]"
+                                    >
+                                      {formik.errors.newPasswordConfirm}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              </dd>
+                            </dl>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="text-left border-b border-[#dcdcdc] bg-[#fbfbfb] py-10 px-25 border-l-0">
+                            <span>이름</span>
+                          </th>
+                          <td className="py-15 pl-15 border-b border-[#dcdcdc]">
+                            <div className="w-4/5">
+                              <input
+                                type="text"
+                                {...formik.getFieldProps("name")}
+                                className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                  formik.touched.name && formik.errors.name
+                                    ? "text-red-900"
+                                    : "text-gray-900"
+                                } shadow-sm ring-1 ring-inset ${
+                                  formik.touched.name && formik.errors.name
+                                    ? "ring-red-300"
+                                    : "ring-gray-300"
+                                } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                  formik.touched.name && formik.errors.name
+                                    ? "focus:ring-red-500"
+                                    : "focus:ring-indigo-600"
+                                } sm:text-sm sm:leading-6`}
+                              />
+                              {formik.touched.name && formik.errors.name ? (
+                                <p
+                                  id="errorMessage"
+                                  className="text-red-600 mt-[0.5rem]"
+                                >
+                                  {formik.errors.name}
+                                </p>
+                              ) : null}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="text-left border-b border-[#dcdcdc] bg-[#fbfbfb] py-10 px-25 border-l-0">
+                            <span>전화번호</span>
+                          </th>
+                          <td className="py-15 pl-15 border-b border-[#dcdcdc]">
+                            <div className="w-4/5">
+                              <input
+                                type="text"
+                                {...formik.getFieldProps("phoneNumber")}
+                                className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                  formik.touched.phoneNumber &&
+                                  formik.errors.phoneNumber
+                                    ? "text-red-900"
+                                    : "text-gray-900"
+                                } shadow-sm ring-1 ring-inset ${
+                                  formik.touched.phoneNumber &&
+                                  formik.errors.phoneNumber
+                                    ? "ring-red-300"
+                                    : "ring-gray-300"
+                                } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                  formik.touched.phoneNumber &&
+                                  formik.errors.phoneNumber
+                                    ? "focus:ring-red-500"
+                                    : "focus:ring-indigo-600"
+                                } sm:text-sm sm:leading-6`}
+                              />
+                              {formik.touched.phoneNumber &&
+                              formik.errors.phoneNumber ? (
+                                <p
+                                  id="errorMessage"
+                                  className="text-red-600 mt-[0.5rem]"
+                                >
+                                  {formik.errors.phoneNumber}
+                                </p>
+                              ) : null}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="text-left border-b border-[#dcdcdc] bg-[#fbfbfb] py-10 px-25 border-l-0">
+                            <span>주소</span>
+                          </th>
+                          <td className="py-15 pl-15 border-b border-[#dcdcdc]">
+                            <div className="w-4/5">
+                              <input
+                                type="text"
+                                {...formik.getFieldProps("address")}
+                                className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                  formik.touched.address &&
+                                  formik.errors.address
+                                    ? "text-red-900"
+                                    : "text-gray-900"
+                                } shadow-sm ring-1 ring-inset ${
+                                  formik.touched.address &&
+                                  formik.errors.address
+                                    ? "ring-red-300"
+                                    : "ring-gray-300"
+                                } placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                                  formik.touched.address &&
+                                  formik.errors.address
+                                    ? "focus:ring-red-500"
+                                    : "focus:ring-indigo-600"
+                                } sm:text-sm sm:leading-6`}
+                              />
+                              {formik.touched.address &&
+                              formik.errors.address ? (
+                                <p
+                                  id="errorMessage"
+                                  className="text-red-600 mt-[0.5rem]"
+                                >
+                                  {formik.errors.address}
+                                </p>
+                              ) : null}
+                            </div>
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
+                </div>
+                <div className="flex items-center justify-end mt-20">
+                  <button
+                    type="button"
+                    className="px-12 py-8 text-sm font-semibold text-indigo-700 rounded-md shadow-sm mr-7 bg-indigo-50 hover:bg-indigo-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-12 py-8 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    정보수정
+                  </button>
                 </div>
               </form>
             </div>

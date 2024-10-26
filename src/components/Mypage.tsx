@@ -39,8 +39,8 @@ const validationSchema = Yup.object().shape({
 
 const MyPage = () => {
   const { userInfo, setUserInfo } = useUserStore();
-  const [openModal, setOpenModal] = useState(false);
-  const [email, setEmail] = useState("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
   const [userWalletResponse, setUserWalletResponse] =
     useState<UserWalletResponse>(initUserWalletResponse);
 
