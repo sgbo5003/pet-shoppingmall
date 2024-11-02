@@ -17,3 +17,11 @@ export interface LoginResponse {
   address: string;
   point: number;
 }
+export interface ModifyRequest {
+  email: string;
+  password: string;
+  newPassword: string;
+  name: string;
+  phoneNumber: string;
+  address: string;
+}

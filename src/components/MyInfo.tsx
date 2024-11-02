@@ -2,6 +2,10 @@ import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import * as Yup from "yup";
 import useUserStore from "../stores/useUserStore.ts";
+import { AxiosError } from "axios";
+import { ErrorDto } from "../api/dto/index.ts";
+import { ModifyRequest } from "../api/dto/auth/index.ts";
+import { api } from "../api/index.ts";
 
 export interface myInfoFormValues {
   name: string;
@@ -25,26 +29,59 @@ const validationSchema = Yup.object().shape({
     .min(3, "최소 3글자 이상이여야 합니다.")
     .max(50, "최대 50글자 이하이여야 합니다.")
     .required("필수 입력 항목입니다."),
+  phoneNumber: Yup.string()
+    .notRequired()
+    .max(20, "최대 20글자 이하이여야 합니다.")
+    .matches(/^[0-9()+-\s]{6,20}$/, "올바르지 않은 형식입니다."),
   address: Yup.string().required("필수 입력 항목입니다."),
-  newPassword: Yup.string()
-    .when("password", {
-      is: (val: string) => val && val.length > 0,
-      then: Yup.string().oneOf(
-        [Yup.ref("password")],
-        "비밀번호가 일치하지 않습니다."
-      ),
+  password: Yup.string()
+    .notRequired()
+    .when(["newPassword", "newPasswordConfirm"], {
+      is: (newPassword, newPasswordConfirm) =>
+        !!newPassword && !!newPasswordConfirm,
+      then: (schema) => schema.required("현재 비밀번호를 입력해주세요."),
     })
-    .min(8, "최소 8글자 이상이여야 합니다.")
-    .max(20, "최대 20글자 이하이여야 합니다."),
-  confirmpassword: Yup.string()
-    .required("필수 입력 항목입니다.") // Password confirmation is required
-    .when("newPassword", {
-      is: (val: string) => val && val.length > 0,
-      then: Yup.string().oneOf(
-        [Yup.ref("newPassword")],
-        "비밀번호가 일치하지 않습니다."
-      ),
-    }),
+    .test(
+      "all-same",
+      "현재 비밀번호, 새 비밀번호, 새 비밀번호 확인이 모두 같을 수 없습니다.",
+      function (value) {
+        const { newPassword, newPasswordConfirm } = this.parent;
+        if (value && newPassword && newPasswordConfirm) {
+          return !(value === newPassword && value === newPasswordConfirm);
+        }
+        return true;
+      }
+    ),
+  newPassword: Yup.string()
+    .notRequired()
+    .min(8, "새 비밀번호는 최소 8자 이상이어야 합니다.")
+    .test(
+      "different-from-current",
+      "새 비밀번호는 현재 비밀번호와 같을 수 없습니다.",
+      function (value) {
+        const { password } = this.parent;
+        return !value || value !== password;
+      }
+    )
+    .test(
+      "confirm-check",
+      "새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.",
+      function (value) {
+        const { newPasswordConfirm } = this.parent;
+        return !value || value === newPasswordConfirm;
+      }
+    ),
+  newPasswordConfirm: Yup.string()
+    .notRequired()
+    .oneOf([Yup.ref("newPassword")], "새 비밀번호와 일치하지 않습니다.")
+    .test(
+      "new-password-check",
+      "새 비밀번호를 먼저 입력해주세요.",
+      function (value) {
+        const { newPassword } = this.parent;
+        return !value || !!newPassword;
+      }
+    ),
 });
 
 const MyInfo = () => {
@@ -57,6 +94,23 @@ const MyInfo = () => {
     validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       console.log("values123", values);
+      try {
+        setSubmitting(true);
+        const obj: ModifyRequest = {
+          email: userInfo.email,
+          password: values.password,
+          newPassword: values.newPassword,
+          name: values.name,
+          phoneNumber: values.phoneNumber,
+          address: values.address,
+        };
+        await api.patch<ModifyRequest>("/auth/modify", obj);
+        alert("회원정보 수정 완료");
+      } catch (e) {
+        const error = e as AxiosError<ErrorDto>;
+        setStatus(error.response?.data.errorMessage);
+        setSubmitting(false);
+      }
     },
   });
 
@@ -67,6 +121,8 @@ const MyInfo = () => {
       address: userInfo.address,
     });
   }, []);
+
+  console.log("formik.error", formik.errors);
 
   return (
     <div className="relative w-full mx-auto my-0">
@@ -105,15 +161,15 @@ const MyInfo = () => {
                           </th>
                           <td className="py-15 pl-15 border-b border-[#dcdcdc]">
                             <dl className="py-5">
-                              <dt className="inline-block w-[120px]">
+                              <dt className="inline-block w-[120px] align-top">
                                 현재 비밀번호
                               </dt>
                               <dd className="inline-block">
-                                <div className="w-4/5">
+                                <div className="inline">
                                   <input
                                     type="text"
                                     {...formik.getFieldProps("password")}
-                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                    className={`block w-4/5 rounded-md border-0 px-1.5 py-1.5 ${
                                       formik.touched.password &&
                                       formik.errors.password
                                         ? "text-red-900"
@@ -143,15 +199,15 @@ const MyInfo = () => {
                               </dd>
                             </dl>
                             <dl className="py-5">
-                              <dt className="inline-block w-[120px]">
+                              <dt className="inline-block w-[120px] align-top">
                                 새 비밀번호
                               </dt>
                               <dd className="inline-block">
-                                <div className="w-4/5">
+                                <div className="inline">
                                   <input
                                     type="text"
                                     {...formik.getFieldProps("newPassword")}
-                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                    className={`block rounded-md border-0 px-1.5 py-1.5 w-4/5 ${
                                       formik.touched.newPassword &&
                                       formik.errors.newPassword
                                         ? "text-red-900"
@@ -181,17 +237,17 @@ const MyInfo = () => {
                               </dd>
                             </dl>
                             <dl className="py-5">
-                              <dt className="inline-block w-[120px]">
+                              <dt className="inline-block w-[120px] align-top">
                                 새 비밀번호 확인
                               </dt>
                               <dd className="inline-block">
-                                <div className="w-4/5">
+                                <div className="inline">
                                   <input
                                     type="text"
                                     {...formik.getFieldProps(
                                       "newPasswordConfirm"
                                     )}
-                                    className={`block w-full rounded-md border-0 px-1.5 py-1.5 ${
+                                    className={`block w-4/5 rounded-md border-0 px-1.5 py-1.5 ${
                                       formik.touched.newPasswordConfirm &&
                                       formik.errors.newPasswordConfirm
                                         ? "text-red-900"
